@@ -1,0 +1,48 @@
+name: Execute Reviewed Tasks
+
+on:
+  schedule:
+    - cron: '0 14 * * *'   # 2pm UTC daily — after Matthew's morning review window
+  workflow_dispatch:         # Allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  execute:
+    name: Execute highest-priority reviewed task
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Full history needed for branch creation
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update && sudo apt install gh -y
+
+      - name: Configure git
+        run: |
+          git config user.name "Claude Code"
+          git config user.email "claude-code[bot]@users.noreply.github.com"
+
+      - name: Run execution
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAUDE_SKIP_PERMISSIONS: '1'
+        run: |
+          claude -p "$(cat .github/prompts/execute.md)" \
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash" \
+            --model claude-opus-4-6

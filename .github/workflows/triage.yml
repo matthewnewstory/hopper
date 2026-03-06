@@ -1,0 +1,71 @@
+name: Triage and Research
+
+on:
+  schedule:
+    - cron: '0 10 * * *'   # 10am UTC daily
+  workflow_dispatch:         # Allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  triage:
+    name: Triage submitted tasks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run triage
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_SKIP_PERMISSIONS: '1'   # Non-interactive / CI mode
+        run: |
+          claude -p "$(cat .github/prompts/triage.md)" \
+            --allowedTools "Read,Edit,Write,Glob,Grep" \
+            --model claude-opus-4-6
+
+      - name: Commit triage results
+        run: |
+          git config user.name "Claude Code"
+          git config user.email "claude-code[bot]@users.noreply.github.com"
+          git add BACKLOG.md
+          git diff --staged --quiet || git commit -m "chore(triage): triage run $(date -u +%Y-%m-%d)"
+          git push
+
+  research:
+    name: Research approved tasks
+    needs: triage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Run research and plan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_SKIP_PERMISSIONS: '1'
+        run: |
+          claude -p "$(cat .github/prompts/research.md)" \
+            --allowedTools "Read,Edit,Write,Glob,Grep" \
+            --model claude-opus-4-6
+
+      - name: Commit plan results
+        run: |
+          git config user.name "Claude Code"
+          git config user.email "claude-code[bot]@users.noreply.github.com"
+          git add BACKLOG.md plans/
+          git diff --staged --quiet || git commit -m "chore(research): plan written $(date -u +%Y-%m-%d)"
+          git push
