@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useSession, signOut } from 'next-auth/react'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
 
 export default function SubmitPage() {
+  const { data: session } = useSession()
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -42,7 +44,17 @@ export default function SubmitPage() {
 
   return (
     <main style={{ maxWidth: 600, margin: '60px auto', padding: '0 24px' }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Submit a Task</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>Submit a Task</h1>
+        {session?.user && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 13, color: '#666' }}>{session.user.email}</span>
+            <button onClick={() => signOut()} style={{ fontSize: 13, color: '#666', background: 'none', border: '1px solid #ddd', borderRadius: 4, padding: '4px 10px', cursor: 'pointer' }}>
+              Sign out
+            </button>
+          </div>
+        )}
+      </div>
       <p style={{ color: '#666', marginBottom: 32 }}>
         Feature requests and bugs go here. Matthew will triage and approve.
       </p>
