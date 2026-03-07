@@ -19,10 +19,10 @@
 - **ID:** TASK-002
 - **Submitted by:** Matthew Marshall
 - **Submitted at:** 2026-03-07
-- **Status:** `submitted`
+- **Status:** `triaged`
 - **Type:** feature
 - **Priority:** medium
-- **Complexity (Claude):** _Pending triage_
+- **Complexity (Claude):** Medium — requires adding ~7 field mappings to the Salesforce Opportunity creation/update flow for one-time gifts (Donation Pipeline, Solicit Team, fundraiser ID, Funraise Donation Status, Donation Form Name, Funraise Payment Method, Funraise Checkbox); straightforward if the Salesforce fields already exist on the Opportunity object and the Funraise integration already provides the data.
 - **Plan:** —
 - **Branch:** —
 - **PR:** —
