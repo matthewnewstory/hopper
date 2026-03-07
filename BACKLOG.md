@@ -15,6 +15,26 @@
 
 ## Active Tasks
 
+### FEATURE: one time gift
+- **ID:** TASK-002
+- **Submitted by:** Matthew Marshall
+- **Submitted at:** 2026-03-07
+- **Status:** `submitted`
+- **Type:** feature
+- **Priority:** medium
+- **Complexity (Claude):** _Pending triage_
+- **Plan:** —
+- **Branch:** —
+- **PR:** —
+- **Matthew's notes:** —
+
+> When I tried to log a one-time gift, 
+> the payment method was not saved correctly. 
+> The sales force opportunity should save the gift’s Donation Pipeline (One-time Donor (operations)), Solict Team (Donation), fundraiser ID, Funraise Donation Status, Donation Form Name, Funraise Payment Method, and Funraise Checkbox as true.
+
+---
+
+
 <!-- Tasks that are in flight (submitted through in-review) go here, newest first -->
 
 ---
