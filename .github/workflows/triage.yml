@@ -39,6 +39,17 @@ jobs:
           git diff --staged --quiet || git commit -m "chore(triage): triage run $(date -u +%Y-%m-%d)"
           git push
 
+      - name: Notify Slack if tasks need approval
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          count=$(grep -c '`triaged`' BACKLOG.md 2>/dev/null || echo 0)
+          if [ "$count" -gt 0 ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d "{\"text\":\"🔍 *Hopper — ${count} task(s) awaiting your go/no-go*\nStatus: \`triaged\` → change to \`approved\` to proceed\n<https://github.com/matthewnewstory/hopper/blob/main/BACKLOG.md|View BACKLOG.md>\"}"
+          fi
+
   research:
     name: Research approved tasks
     needs: triage
@@ -69,3 +80,14 @@ jobs:
           git add BACKLOG.md plans/
           git diff --staged --quiet || git commit -m "chore(research): plan written $(date -u +%Y-%m-%d)"
           git push
+
+      - name: Notify Slack if plans need review
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          count=$(grep -c '`planned`' BACKLOG.md 2>/dev/null || echo 0)
+          if [ "$count" -gt 0 ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d "{\"text\":\"📝 *Hopper — ${count} plan(s) ready for your review*\nStatus: \`planned\` → annotate the plan file and change to \`reviewed\` to proceed\n<https://github.com/matthewnewstory/hopper/blob/main/BACKLOG.md|View BACKLOG.md>\"}"
+          fi

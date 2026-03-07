@@ -46,3 +46,14 @@ jobs:
           claude -p "$(cat .github/prompts/execute.md)" \
             --allowedTools "Read,Edit,Write,Glob,Grep,Bash" \
             --model claude-opus-4-6
+
+      - name: Notify Slack if PRs need review
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          count=$(grep -c '`in-review`' BACKLOG.md 2>/dev/null || echo 0)
+          if [ "$count" -gt 0 ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
+            curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d "{\"text\":\"🚀 *Hopper — ${count} PR(s) ready to merge*\nStatus: \`in-review\` → review and merge the PR to mark as done\n<https://github.com/matthewnewstory/hopper/pulls|View Pull Requests>\"}"
+          fi
