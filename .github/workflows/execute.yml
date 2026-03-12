@@ -44,9 +44,13 @@ jobs:
           CLAUDE_SKIP_PERMISSIONS: '1'
         run: |
           if grep -q '`reviewed`' BACKLOG.md; then
-            claude -p "$(cat .github/prompts/execute.md)" \
-              --allowedTools "Read,Edit,Write,Glob,Grep,Bash" \
-              --model claude-sonnet-4-6
+            for attempt in 1 2 3; do
+              echo "Attempt $attempt..."
+              claude -p "$(cat .github/prompts/execute.md)" \
+                --allowedTools "Read,Edit,Write,Glob,Grep,Bash" \
+                --model claude-sonnet-4-6 && break
+              [ $attempt -lt 3 ] && echo "Retrying in 60s..." && sleep 60
+            done
           else
             echo "No reviewed tasks — skipping Claude"
           fi

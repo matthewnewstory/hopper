@@ -28,9 +28,13 @@ jobs:
           CLAUDE_SKIP_PERMISSIONS: '1'   # Non-interactive / CI mode
         run: |
           if grep -q '`submitted`' BACKLOG.md; then
-            claude -p "$(cat .github/prompts/triage.md)" \
-              --allowedTools "Read,Edit,Write,Glob,Grep" \
-              --model claude-haiku-4-5-20251001
+            for attempt in 1 2 3; do
+              echo "Attempt $attempt..."
+              claude -p "$(cat .github/prompts/triage.md)" \
+                --allowedTools "Read,Edit,Write,Glob,Grep" \
+                --model claude-haiku-4-5-20251001 && break
+              [ $attempt -lt 3 ] && echo "Retrying in 60s..." && sleep 60
+            done
           else
             echo "No submitted tasks — skipping Claude"
           fi
@@ -74,9 +78,13 @@ jobs:
           CLAUDE_SKIP_PERMISSIONS: '1'
         run: |
           if grep -q '`approved`' BACKLOG.md; then
-            claude -p "$(cat .github/prompts/research.md)" \
-              --allowedTools "Read,Edit,Write,Glob,Grep" \
-              --model claude-sonnet-4-6
+            for attempt in 1 2 3; do
+              echo "Attempt $attempt..."
+              claude -p "$(cat .github/prompts/research.md)" \
+                --allowedTools "Read,Edit,Write,Glob,Grep" \
+                --model claude-sonnet-4-6 && break
+              [ $attempt -lt 3 ] && echo "Retrying in 60s..." && sleep 60
+            done
           else
             echo "No approved tasks — skipping Claude"
           fi
