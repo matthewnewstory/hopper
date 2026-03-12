@@ -43,9 +43,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLAUDE_SKIP_PERMISSIONS: '1'
         run: |
-          claude -p "$(cat .github/prompts/execute.md)" \
-            --allowedTools "Read,Edit,Write,Glob,Grep,Bash" \
-            --model claude-opus-4-6
+          if grep -q '`reviewed`' BACKLOG.md; then
+            claude -p "$(cat .github/prompts/execute.md)" \
+              --allowedTools "Read,Edit,Write,Glob,Grep,Bash" \
+              --model claude-sonnet-4-6
+          else
+            echo "No reviewed tasks — skipping Claude"
+          fi
 
       - name: Notify Slack if PRs need review
         env:

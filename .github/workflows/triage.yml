@@ -27,9 +27,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_SKIP_PERMISSIONS: '1'   # Non-interactive / CI mode
         run: |
-          claude -p "$(cat .github/prompts/triage.md)" \
-            --allowedTools "Read,Edit,Write,Glob,Grep" \
-            --model claude-opus-4-6
+          if grep -q '`submitted`' BACKLOG.md; then
+            claude -p "$(cat .github/prompts/triage.md)" \
+              --allowedTools "Read,Edit,Write,Glob,Grep" \
+              --model claude-haiku-4-5-20251001
+          else
+            echo "No submitted tasks — skipping Claude"
+          fi
 
       - name: Commit triage results
         run: |
@@ -69,9 +73,13 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLAUDE_SKIP_PERMISSIONS: '1'
         run: |
-          claude -p "$(cat .github/prompts/research.md)" \
-            --allowedTools "Read,Edit,Write,Glob,Grep" \
-            --model claude-opus-4-6
+          if grep -q '`approved`' BACKLOG.md; then
+            claude -p "$(cat .github/prompts/research.md)" \
+              --allowedTools "Read,Edit,Write,Glob,Grep" \
+              --model claude-sonnet-4-6
+          else
+            echo "No approved tasks — skipping Claude"
+          fi
 
       - name: Commit plan results
         run: |
