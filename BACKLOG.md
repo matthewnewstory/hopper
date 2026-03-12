@@ -15,6 +15,24 @@
 
 ## Active Tasks
 
+### BUG: On /results after an update to an opportunity the app created the correct SF payments but didn't create the QB invoices
+- **ID:** TASK-003
+- **Submitted by:** Matthew Marshall
+- **Submitted at:** 2026-03-12
+- **Status:** `triaged`
+- **Type:** bug
+- **Priority:** high
+- **Complexity (Claude):** _Pending triage_
+- **Plan:** —
+- **Branch:** —
+- **PR:** —
+- **Matthew's notes:** —
+
+> See error message: QB invoices failed: QB token refresh failed (400): {"error":"invalid_grant","error_description":"Incorrect or invalid refresh token"}
+
+---
+
+
 ### FEATURE: one time gift
 - **ID:** TASK-002
 - **Submitted by:** Matthew Marshall
