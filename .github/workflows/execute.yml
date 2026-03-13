@@ -43,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLAUDE_SKIP_PERMISSIONS: '1'
         run: |
-          if grep -q '`reviewed`' BACKLOG.md; then
+          if grep -q '\*\*Status:\*\* `reviewed`' BACKLOG.md; then
             for attempt in 1 2 3; do
               echo "Attempt $attempt..."
               claude -p "$(cat .github/prompts/execute.md)" \
@@ -59,7 +59,7 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          count=$(grep -c '`in-review`' BACKLOG.md 2>/dev/null || echo 0)
+          count=$(grep -c '\*\*Status:\*\* `in-review`' BACKLOG.md 2>/dev/null || echo 0)
           if [ "$count" -gt 0 ] && [ -n "$SLACK_WEBHOOK_URL" ]; then
             curl -s -X POST "$SLACK_WEBHOOK_URL" \
               -H 'Content-Type: application/json' \
