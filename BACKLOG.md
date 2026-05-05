@@ -15,6 +15,24 @@
 
 ## Active Tasks
 
+### BUG: Is this still working?
+- **ID:** TASK-002
+- **Submitted by:** Matthew Marshall
+- **Submitted at:** 2026-05-05
+- **Status:** `triaged`
+- **Type:** bug
+- **Priority:** low
+- **Complexity (Claude):** _Pending triage_
+- **Plan:** —
+- **Branch:** —
+- **PR:** —
+- **Matthew's notes:** —
+
+> Test test
+
+---
+
+
 
 
 ---
