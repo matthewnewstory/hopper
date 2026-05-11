@@ -19,7 +19,7 @@
 - **ID:** TASK-002
 - **Submitted by:** Matthew Marshall
 - **Submitted at:** 2026-05-05
-- **Status:** `triaged`
+- **Status:** `done`
 - **Type:** bug
 - **Priority:** low
 - **Complexity (Claude):** _Pending triage_
