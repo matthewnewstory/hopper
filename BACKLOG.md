@@ -15,6 +15,24 @@
 
 ## Active Tasks
 
+### FEATURE: test test
+- **ID:** TASK-003
+- **Submitted by:** Matthew Marshall
+- **Submitted at:** 2026-07-22
+- **Status:** `triaged`
+- **Type:** feature
+- **Priority:** low
+- **Complexity (Claude):** _Pending triage_
+- **Plan:** —
+- **Branch:** —
+- **PR:** —
+- **Matthew's notes:** —
+
+> Test!
+
+---
+
+
 ### BUG: Is this still working?
 - **ID:** TASK-002
 - **Submitted by:** Matthew Marshall
